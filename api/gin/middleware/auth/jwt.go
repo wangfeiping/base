@@ -19,6 +19,9 @@ const RequestUserToken = "Authorization"
 func UserJwtAuthentication(tokenKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		tokenVal := c.GetHeader(RequestUserToken)
+		if len(tokenVal) == 0 {
+			tokenVal = c.Query(RequestUserToken)
+		}
 
 		userId, info, err := auth.ResolveJWTToken(tokenVal, tokenKey, log2.RequestEntry(c))
 		if err != nil {

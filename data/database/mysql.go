@@ -8,13 +8,13 @@ import (
 )
 
 var (
-	defaultDatabaseKey = ""
 	defaultMySQLConfig = MySQLConfig{
 		host:     "127.0.0.1",
 		port:     3306,
 		user:     "root",
 		password: "",
 		database: "",
+		logMode:  false,
 	}
 )
 
@@ -50,12 +50,19 @@ func MySQLDatabase(database string) MySQLOption {
 	}
 }
 
+func MySQLLogMode(enable bool) MySQLOption {
+	return func(config *MySQLConfig) {
+		config.logMode = enable
+	}
+}
+
 type MySQLConfig struct {
 	host     string
 	port     uint16
 	user     string
 	password string
 	database string
+	logMode  bool
 }
 
 func NewMySQLConfig(options ...MySQLOption) *MySQLConfig {
@@ -68,10 +75,6 @@ func NewMySQLConfig(options ...MySQLOption) *MySQLConfig {
 
 	if conf, ok := configs[config.database]; ok {
 		return conf
-	}
-
-	if len(configs) == 0 {
-		defaultDatabaseKey = config.database
 	}
 
 	configs[config.database] = &config
@@ -132,6 +135,9 @@ func (conn *Connection) reconnect() (err error) {
 	} else {
 		logger.Info("set names utf8mb4")
 	}
+
+	logger.WithField("logMode", conn.config.logMode).Info("setting gorm log mode")
+	conn.DB.LogMode(conn.config.logMode)
 
 	return
 }

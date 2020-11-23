@@ -17,3 +17,4 @@ mysql:
     username: root
     password:
     database: test
+    logMode: true

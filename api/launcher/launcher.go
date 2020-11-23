@@ -169,6 +169,7 @@ func (app *Application) startMySQLClient() {
 			database.MySQLUsername(mysqlConfig.GetUsername()),
 			database.MySQLPassword(mysqlConfig.GetPassword()),
 			database.MySQLDatabase(mysqlConfig.GetDatabase()),
+			database.MySQLLogMode(mysqlConfig.GetLogMode()),
 		))
 
 		if err != nil {

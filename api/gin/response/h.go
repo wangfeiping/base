@@ -59,6 +59,33 @@ func (data ResponseData) WithError(err error) *ResponseData {
 	case *ResponseData:
 		data.Code = err.Code
 		data.Message = err.Message
+	case validation.Error:
+
+		validationErrorData := data.withValidationError(err)
+
+		data.Status = validationErrorData.Status
+		data.Code = validationErrorData.Code
+		data.Message = validationErrorData.Message
+
+	case validation.Errors:
+
+		data.Status = http.StatusBadRequest
+
+		if len(err) == 1 {
+
+			for _, validationError := range err {
+
+				validationErrorData := data.withValidationError(validationError)
+
+				data.Code = validationErrorData.Code
+				data.Message = validationErrorData.Message
+				break
+			}
+
+			break
+		}
+
+		data.Message = err.Error()
 	default:
 		data.Message = err.Error()
 	}
@@ -68,6 +95,27 @@ func (data ResponseData) WithError(err error) *ResponseData {
 
 func (data ResponseData) WithMessage(message string) *ResponseData {
 	data.Message = message
+	return &data
+}
+
+func (data ResponseData) withValidationError(err error) *ResponseData {
+
+	switch err := err.(type) {
+	case validation.Error:
+
+		data.Status = http.StatusBadRequest
+		code, convertError := strconv.ParseInt(err.Code(), 10, 64)
+		if convertError != nil {
+			data.Message = err.Error()
+			break
+		}
+
+		data.Code = int(code)
+		data.Message = err.Message()
+	default:
+		data.Message = err.Error()
+	}
+
 	return &data
 }
 
@@ -140,6 +188,9 @@ func Error(c *gin.Context, e error) {
 	case *ResponseData:
 		c.JSON(err.Status, err)
 
+	case ResponseData:
+		c.JSON(err.Status, err)
+
 	case validation.Error:
 
 		errorCode, convertError := strconv.ParseInt(err.Code(), 10, 64)
@@ -156,6 +207,23 @@ func Error(c *gin.Context, e error) {
 			Code:    int(errorCode),
 			Message: err.Message(),
 		})
+
+	case validation.Errors:
+
+		if len(err) > 1 {
+
+			c.JSON(http.StatusBadRequest, ResponseData{
+				Code:    errors.CodeRequestParamError,
+				Message: err.Error(),
+			})
+			return
+		}
+
+		for _, validationError := range err {
+
+			Error(c, validationError)
+			return
+		}
 
 	default:
 		c.JSON(UnknownError.Status, &ResponseData{

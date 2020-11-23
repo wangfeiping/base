@@ -2,6 +2,7 @@ package response
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -15,11 +16,18 @@ import (
 func TestResponseData_Error(t *testing.T) {
 
 	tests := []struct {
-		Input *ResponseData
+		Input error
 		Want  string
 	}{
 		{
 			Input: &ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			Want: `{"code":400,"msg":"BadRequest"}`,
+		},
+		{
+			Input: ResponseData{
 				Code:    http.StatusBadRequest,
 				Message: "BadRequest",
 			},
@@ -131,10 +139,118 @@ func TestResponseData_WithError(t *testing.T) {
 				Message: "Parameters error",
 			},
 		},
+		{
+			Input: ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			InputError: validation.NewError("500001", "Parameters error"),
+			Want: &ResponseData{
+				Status:  http.StatusBadRequest,
+				Code:    500001,
+				Message: "Parameters error",
+			},
+		},
+		{
+			Input: ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			InputError: validation.NewError("invalid code", "Parameters error"),
+			Want: &ResponseData{
+				Status:  http.StatusBadRequest,
+				Code:    http.StatusBadRequest,
+				Message: "Parameters error",
+			},
+		},
+		{
+			Input: ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			InputError: func() error {
+
+				validationErrors := validation.Errors{}
+				validationErrors["username"] = validation.NewError("500001", "Parameters error")
+				return validationErrors
+			}(),
+			Want: &ResponseData{
+				Status:  http.StatusBadRequest,
+				Code:    500001,
+				Message: "Parameters error",
+			},
+		},
+		{
+			Input: ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			InputError: func() error {
+
+				validationErrors := validation.Errors{}
+				validationErrors["username"] = validation.NewError("500001", "Parameters error")
+				validationErrors["password"] = validation.NewError("500001", "Parameters error")
+				return validationErrors
+			}(),
+			Want: &ResponseData{
+				Status:  http.StatusBadRequest,
+				Code:    http.StatusBadRequest,
+				Message: "password: Parameters error; username: Parameters error.",
+			},
+		},
 	}
 
 	for _, test := range tests {
-		assert.Equal(t, test.Want, test.Input.WithError(test.InputError))
+		assert.Equal(t, test.Want, test.Input.WithError(test.InputError), test)
+	}
+}
+
+func TestResponseData_withValidationError(t *testing.T) {
+
+	tests := []struct {
+		Input      ResponseData
+		InputError error
+		Want       *ResponseData
+	}{
+		{
+			Input: ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			InputError: validation.NewError("invalid code", "Parameters error"),
+			Want: &ResponseData{
+				Status:  http.StatusBadRequest,
+				Code:    http.StatusBadRequest,
+				Message: "Parameters error",
+			},
+		},
+		{
+			Input: ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			InputError: validation.NewError("500001", "Parameters error"),
+			Want: &ResponseData{
+				Status:  http.StatusBadRequest,
+				Code:    500001,
+				Message: "Parameters error",
+			},
+		},
+		{
+			Input: ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "BadRequest",
+			},
+			InputError: fmt.Errorf("normal error"),
+			Want: &ResponseData{
+				Code:    http.StatusBadRequest,
+				Message: "normal error",
+			},
+		},
+	}
+
+	for _, test := range tests {
+		assert.Equal(t, test.Want, test.Input.withValidationError(test.InputError), test)
 	}
 }
 
@@ -236,6 +352,28 @@ func TestResponseError(t *testing.T) {
 			}{HTTPStatus: http.StatusInternalServerError, ResponseString: `{"code":500000,"msg":"BadRequest"}`},
 		},
 		{
+			Input: &ResponseData{
+				Status:  http.StatusUnauthorized,
+				Code:    400003,
+				Message: "unauthorized",
+			},
+			Want: struct {
+				HTTPStatus     int
+				ResponseString string
+			}{HTTPStatus: http.StatusUnauthorized, ResponseString: `{"code":400003,"msg":"unauthorized"}`},
+		},
+		{
+			Input: ResponseData{
+				Status:  http.StatusUnauthorized,
+				Code:    400003,
+				Message: "unauthorized",
+			},
+			Want: struct {
+				HTTPStatus     int
+				ResponseString string
+			}{HTTPStatus: http.StatusUnauthorized, ResponseString: `{"code":400003,"msg":"unauthorized"}`},
+		},
+		{
 			Input: validation.NewError("400001", "parameter invalid"),
 			Want: struct {
 				HTTPStatus     int
@@ -248,6 +386,31 @@ func TestResponseError(t *testing.T) {
 				HTTPStatus     int
 				ResponseString string
 			}{HTTPStatus: http.StatusBadRequest, ResponseString: `{"code":400000,"msg":"parameter invalid"}`},
+		},
+		{
+			Input: func() error {
+
+				errs := validation.Errors{}
+				errs["password"] = validation.NewError("400001", "password too short")
+				return errs
+			}(),
+			Want: struct {
+				HTTPStatus     int
+				ResponseString string
+			}{HTTPStatus: http.StatusBadRequest, ResponseString: `{"code":400001,"msg":"password too short"}`},
+		},
+		{
+			Input: func() error {
+
+				errs := validation.Errors{}
+				errs["password"] = validation.NewError("400044", "password too short")
+				errs["username"] = validation.NewError("400045", "username too short")
+				return errs
+			}(),
+			Want: struct {
+				HTTPStatus     int
+				ResponseString string
+			}{HTTPStatus: http.StatusBadRequest, ResponseString: `{"code":400000,"msg":"password: password too short; username: username too short."}`},
 		},
 	}
 

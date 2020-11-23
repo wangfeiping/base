@@ -10,6 +10,7 @@ type MySQLConfig struct {
 	Username string `json:"username" yaml:"username"`
 	Password string `json:"password" yaml:"password"`
 	Database string `json:"database" yaml:"database"`
+	LogMode  bool   `json:"logMode" yaml:"logMode"`
 }
 
 func (config MySQLConfig) GetHost() string {
@@ -44,4 +45,9 @@ func (config MySQLConfig) GetPassword() string {
 func (config MySQLConfig) GetDatabase() string {
 
 	return config.Database
+}
+
+func (config MySQLConfig) GetLogMode() bool {
+
+	return config.LogMode
 }

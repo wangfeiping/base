@@ -10,6 +10,6 @@ type Time struct {
 }
 
 type BasicTimeFields struct {
-	CreatedAt time.Time  `gorm:"column:createdAt;not null;default:CURRENT_TIMESTAMP"`
-	UpdatedAt time.Time  `gorm:"column:updatedAt;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
+	CreatedAt time.Time `gorm:"column:createdAt;not null;default:CURRENT_TIMESTAMP"`
+	UpdatedAt time.Time `gorm:"column:updatedAt;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
 }

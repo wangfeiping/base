@@ -164,6 +164,55 @@ func TestMySQLDatabase(t *testing.T) {
 	}
 }
 
+func TestMySQLLogMode(t *testing.T) {
+
+	tests := []struct {
+		inputOption MySQLOption
+		inputConfig MySQLConfig
+		want        MySQLConfig
+	}{
+		{
+			inputOption: nil,
+			inputConfig: defaultMySQLConfig,
+			want: func() MySQLConfig {
+
+				config := defaultMySQLConfig
+				config.logMode = false
+				return config
+			}(),
+		},
+		{
+			inputOption: MySQLLogMode(true),
+			inputConfig: defaultMySQLConfig,
+			want: func() MySQLConfig {
+
+				config := defaultMySQLConfig
+				config.logMode = true
+				return config
+			}(),
+		},
+		{
+			inputOption: MySQLLogMode(false),
+			inputConfig: defaultMySQLConfig,
+			want: func() MySQLConfig {
+
+				config := defaultMySQLConfig
+				config.logMode = false
+				return config
+			}(),
+		},
+	}
+
+	for _, test := range tests {
+
+		if test.inputOption != nil {
+			test.inputOption(&test.inputConfig)
+		}
+
+		assert.Equal(t, test.want, test.inputConfig)
+	}
+}
+
 func TestConnection_Connect(t *testing.T) {
 
 	tests := []struct {
