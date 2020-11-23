@@ -1,4 +1,4 @@
-module github.com/wanxin-go-micro/base
+module github.com/wangfeiping/base
 
 go 1.13
 
