@@ -1,4 +1,4 @@
-module dev-gitlab.wanxingrowth.com/wanxin-go-micro/base
+module github.com/wanxin-go-micro/base
 
 go 1.13
 
