@@ -7,7 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/gin/middleware/log/request"
+	"github.com/wanxin-go-micro/base/api/gin/middleware/log/request"
 )
 
 const ServiceNameGin = "gin"

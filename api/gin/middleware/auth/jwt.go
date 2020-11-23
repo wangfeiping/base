@@ -3,9 +3,9 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/gin/response"
-	log2 "dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/gin/util/log"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/auth"
+	"github.com/wanxin-go-micro/base/api/gin/response"
+	log2 "github.com/wanxin-go-micro/base/api/gin/util/log"
+	"github.com/wanxin-go-micro/base/auth"
 )
 
 // UserId

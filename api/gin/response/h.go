@@ -10,7 +10,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/sirupsen/logrus"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/errors"
+	"github.com/wanxin-go-micro/base/api/errors"
 )
 
 var (

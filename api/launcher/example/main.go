@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/gin/response"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/launcher"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/launcher/example/protos"
+	"github.com/wanxin-go-micro/base/api/gin/response"
+	"github.com/wanxin-go-micro/base/api/launcher"
+	"github.com/wanxin-go-micro/base/api/launcher/example/protos"
 )
 
 func main() {

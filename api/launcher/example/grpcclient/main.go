@@ -8,7 +8,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/launcher/example/protos"
+	"github.com/wanxin-go-micro/base/api/launcher/example/protos"
 )
 
 const (

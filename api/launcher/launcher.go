@@ -14,12 +14,12 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/launcher/cmd"
-	launcherConfig "dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/launcher/config"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/launcher/service"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/data/cache"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/data/database"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/utils/log"
+	"github.com/wanxin-go-micro/base/api/launcher/cmd"
+	launcherConfig "github.com/wanxin-go-micro/base/api/launcher/config"
+	"github.com/wanxin-go-micro/base/api/launcher/service"
+	"github.com/wanxin-go-micro/base/data/cache"
+	"github.com/wanxin-go-micro/base/data/database"
+	"github.com/wanxin-go-micro/base/utils/log"
 )
 
 type ApplicationDescription struct {

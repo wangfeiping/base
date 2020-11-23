@@ -5,7 +5,7 @@ import (
 	"github.com/shomali11/util/xstrings"
 	"github.com/sirupsen/logrus"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/gin/request/requestid"
+	"github.com/wanxin-go-micro/base/api/gin/request/requestid"
 )
 
 // usage: RequestEntry(c).Debug(".....")

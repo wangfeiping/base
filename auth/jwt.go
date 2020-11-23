@@ -10,7 +10,7 @@ import (
 	"github.com/shomali11/util/xstrings"
 	"github.com/sirupsen/logrus"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/utils/idcreator/snowflake"
+	"github.com/wanxin-go-micro/base/utils/idcreator/snowflake"
 )
 
 func NewUserJwtToken(userId uint64, info map[string]interface{}, secretKey string) (string, int64, error) {

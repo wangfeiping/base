@@ -6,9 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/errors"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/gin/request/requestid"
-	"dev-gitlab.wanxingrowth.com/wanxin-go-micro/base/api/gin/response"
+	"github.com/wanxin-go-micro/base/api/errors"
+	"github.com/wanxin-go-micro/base/api/gin/request/requestid"
+	"github.com/wanxin-go-micro/base/api/gin/response"
 )
 
 func Params(c *gin.Context, v Validator) error {
